@@ -10,7 +10,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-
+ 
 def climate_data(filename):
     """
     Reads the World Bank data from a given file and returns two dataframes:
@@ -63,7 +63,6 @@ def get_indicator_names(filename):
     return indicator_names
 
 
-
 def plot_co2_emissions(file_path):
     
     """Plots CO2 emissions for the top 8 countries.
@@ -114,6 +113,13 @@ def plot_co2_emissions(file_path):
     plt.xlabel('Country')
     plt.ylabel('CO2 Emissions (kt)')
     plt.legend(loc='upper right')
+    
+    # add a light color grid
+    plt.grid(True, alpha=0.3)
+    
+    # move the grid to the background
+    plt.gca().set_axisbelow(True)
+    
     plt.show()
    
 
@@ -155,6 +161,12 @@ def plot_elec_production(data_path, countries):
     ax.set_ylabel('Electricity Production', fontsize=14)
     ax.legend(fontsize=12)
     plt.xticks(rotation=90, fontsize=12)
+    
+    # add a light color grid
+    plt.grid(True, alpha=0.3)
+    
+    # move the grid to the background
+    plt.gca().set_axisbelow(True)
     plt.show()
 
 
@@ -264,7 +276,13 @@ def plot_gg_countries(data_file: str, countries: list, num_countries: int = 10) 
 
     # Add a legend to the plot
     plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), fontsize=14)
-
+   
+    # add a light color grid
+    plt.grid(True, alpha=0.3)
+    
+    # move the grid to the background
+    plt.gca().set_axisbelow(True)
+    
     # Display the plot
     plt.show()
 
@@ -302,8 +320,16 @@ def plot_population_data(population_file, countries, years):
                                                     years[0], years[-1]),fontweight="bold")
     # Rotate x-axis labels for better readability
     plt.xticks(rotation=90)
+    
     # Add a legend to the plot
     plt.legend()
+    
+    # add a light color grid
+    plt.grid(True, alpha=0.3)
+    
+    # move the grid to the background
+    plt.gca().set_axisbelow(True)
+    
     # Display the plot
     plt.show()
 
