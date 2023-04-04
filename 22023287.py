@@ -42,7 +42,7 @@ def climate_data(filename):
     return data_years, data_countries
 
 
-def get_indicator_names(filename):
+def indicator_names(filename):
     
     """
     Reads the World Bank data from a given file and returns a list of all indicator names.
@@ -109,7 +109,7 @@ def plot_co2_emissions(file_path):
     
     # Enlarge the outer box
     plt.subplots_adjust(left=0.1, right=1.2, top=0.9, bottom=0.1)
-    plt.title('Top 8 Countries with the Highest CO2 Emissions (kt)', fontweight='bold')
+    plt.title('Top 8 Countries with the Highest CO2 Emissions', fontweight='bold')
     plt.xlabel('Country')
     plt.ylabel('CO2 Emissions (kt)')
     plt.legend(loc='upper right')
@@ -219,7 +219,7 @@ def heatmap_countries(data_file: str, country_names: list, indicators: list, tim
             
             # Create a heatmap of correlation between indicators
             fig, ax = plt.subplots(figsize=(15, 12))
-            heatmap = sns.heatmap(time_period_data.corr(), center=0, cmap=cmap_list[i],
+            sns.heatmap(time_period_data.corr(), center=0, cmap=cmap_list[i],
                                   annot=True, cbar_kws={'orientation': 'vertical'})
             
             # Bold the indicator names
@@ -393,6 +393,9 @@ if __name__ == '__main__':
     filename = "D:/climate change/Climate.csv"
     data_years, data_countries = climate_data(filename)
     print(data_years, data_countries.describe())
+    
+    #call indicator name function
+    indicator_names("D:/climate change/Climate.csv")
 
     # call co2 emission function
     plot_co2_emissions("D:/CO2_emission/CO2_emmission.csv")
