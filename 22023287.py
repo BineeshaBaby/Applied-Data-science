@@ -357,55 +357,80 @@ def plot_population_data(population_file, countries, years):
     plt.gca().set_axisbelow(True)
     # Display the plot
     plt.show()
+    
+
+def plot_kurtosis_over_time(file_path, color='blue'):
+    # Load CSV file into pandas DataFrame
+    df = pd.read_csv(file_path, skiprows=4)
+
+    # Get the indicator columns
+    indicator_columns = df.columns[4:]
+
+    # calculate kurtosis for each column from 1960 to 2019
+    kurt_values = []
+    for col in df.columns[4:]:
+        kurt = df[col].kurtosis()
+        kurt_values.append(kurt)
+        print(f"{col} kurtosis: {kurt:.2f}")
+
+    # slice the y array to have the same length as the x array
+    y = kurt_values[:60]
+
+    # plot the kurtosis values
+    plt.figure(figsize=(8,6))
+    plt.plot(range(1960, 2020), y, color=color, linestyle='-', linewidth=2, marker='o', markersize=9, markerfacecolor=color, markeredgecolor='white')
+    plt.xlabel('Year', fontsize=14)
+    plt.ylabel('Kurtosis', fontsize=14)
+    plt.title('Kurtosis over time', fontsize=16)
+    plt.xticks(rotation=45)
+    plt.legend(['Kurtosis'])
+    plt.grid(True)
+    plt.show()
 
 
 if __name__ == '__main__':
-    
+    # Data extraction and processing
     filename = "D:/climate change/Climate.csv"
     data_years, data_countries = climate_data(filename)
-
     print(data_years, data_countries.describe())
-    
+
+    # call co2 emission function
     plot_co2_emissions("D:/CO2_emission/CO2_emmission.csv")
 
-    # usage
+    # call plot_elec_production function
     countries = ['Qatar', 'Bahrain', 'Kuwait', 'United Arab Emirates', 'Oman', 'Brunei Darussalam', 'Canada', 'Luxembourg']
     data_path = "D:/Electricity_production/electricity.csv"
-
     plot_elec_production(data_path, countries)
-    
+
+    # call heatmap_countries function
     data_file = "D:/climate change/Climate.csv"
     country_names = ["Canada", "United Arab Emirates", "Qatar"]
     indicators = ["CO2 emissions (metric tons per capita)",
-                      "GDP per capita (constant 2010 US$)",
-                    "Access to electricity (% of population)",
-                    "Urban population (% of total population)",
-                      "Electricity production from oil, gas and coal sources (% of total)",
-                      "Total greenhouse gas emissions (kt of CO2 equivalent)",
-                      "Forest area (sq. km)",
-                      "Agricultural land (% of land area)","Population, total",]
-
+                  "GDP per capita (constant 2010 US$)",
+                  "Access to electricity (% of population)",
+                  "Urban population (% of total population)",
+                  "Electricity production from oil, gas and coal sources (% of total)",
+                  "Total greenhouse gas emissions (kt of CO2 equivalent)",
+                  "Forest area (sq. km)",
+                  "Agricultural land (% of land area)",
+                  "Population, total"]
     time_periods = {"2019": ["1960", "2015"]}
-
     heatmap_countries(data_file, country_names, indicators, time_periods)
-    
-    data_file = "D:/greenhouse_gas_emmissions/green_house_gas.csv"
-    countries = ['Qatar', 'Bahrain', 'Kuwait', 'United Arab Emirates', 
-                 'Oman', 'Brunei Darussalam', 'Canada', 'Luxembourg']
-    num_countries = 8
 
+    # call plot_gg_countries function
+    data_file = "D:/greenhouse_gas_emmissions/green_house_gas.csv"
+    countries = ['Qatar', 'Bahrain', 'Kuwait', 'United Arab Emirates', 'Oman', 'Brunei Darussalam', 'Canada', 'Luxembourg']
+    num_countries = 8
     plot_gg_countries(data_file, countries, num_countries)
 
-    
-   # Example usage
+    # call plot_population_data function
     population_file = "D:/population/population.csv"
-    countries = ['Qatar', 'Bahrain', 'Kuwait', 'United Arab Emirates', 
-                'Oman', 'Brunei Darussalam', 'Canada', 'Luxembourg']
+    countries = ['Qatar', 'Bahrain', 'Kuwait', 'United Arab Emirates', 'Oman', 'Brunei Darussalam', 'Canada', 'Luxembourg']
     years = ['2015', '2016', '2017', '2018', '2019']
     plot_population_data(population_file, countries, years)
 
-
-
+    # call_kurtosis_over_time function
+    plot_kurtosis_over_time("D:/population/population.csv", color='red')
 
 
 
