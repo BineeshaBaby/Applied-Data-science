@@ -123,27 +123,27 @@ def plot_co2_emissions(file_path):
     plt.show()
    
 
+
 def plot_elec_production(data_path, countries):
+    """
+    Plots a bar chart of electricity production from oil, gas, and coal sources for the specified countries.
     
-    """Plot electricity production for specified countries.
-
-    Args:
-    data_path (str): The path to the CSV file containing electricity production data
-    countries (list): A list of country names for which electricity production data is to be plotted
-
+    Parameters:
+    data_path (str): The path to the CSV file containing the electricity production data.
+    countries (list of str): The list of countries to include in the chart.
+    
     Returns:
     None
-
     """
-
+    
     # Load electricity production data into a DataFrame
     df_elec_data = pd.read_csv(data_path, skiprows=4)
-
+    
     # Filter electricity production data to include only the specified countries
     df_elec_data = df_elec_data[df_elec_data['Country Name'].isin(countries)]
 
     # Keep only necessary columns
-    df_elec_data = df_elec_data[['Country Name', '2015', '2016', '2017', '2018', '2019']]
+    df_elec_data = df_elec_data[['Country Name', '1995', '2000', '2005', '2010', '2015']]
 
     # Fill any missing values with zeros
     df_elec_data.fillna(0, inplace=True)
@@ -151,17 +151,18 @@ def plot_elec_production(data_path, countries):
     # Set the 'Country Name' column as the index
     df_elec_data.set_index('Country Name', inplace=True)
     
-    # Print summary statistics
-    print(df_elec_data.describe())
+    # Define the colors for the bars
+    colors = plt.cm.tab20(range(len(countries)))
 
     # Create a bar graph of electricity production for the specified countries
-    ax = df_elec_data.loc[countries].plot(kind='bar', figsize=(10,6), width=0.8)
-    ax.set_title('Electricity Production for Specified Countries', fontsize=16, fontweight='bold')
+    ax = df_elec_data.loc[countries].plot(kind='bar', figsize=(10,6), width=0.8, color=colors)
+    ax.set_title('Electricity production from oil, gas and coal sources (% of total)', 
+                 fontsize=16, fontweight='bold')
     ax.set_xlabel('Country', fontsize=14)
     ax.set_ylabel('Electricity Production', fontsize=14)
-    ax.legend(fontsize=12)
+
     plt.xticks(rotation=90, fontsize=12)
-    
+    plt.legend(loc='center left', bbox_to_anchor=(1.0, 0.5), fontsize=14)   
     # add a light color grid
     plt.grid(True, alpha=0.3)
     
@@ -170,17 +171,33 @@ def plot_elec_production(data_path, countries):
     plt.show()
 
 
-def heatmap_countries(data_file, country_names, indicators, time_periods):
-    # Define the colormap for each country
-    cmap_list = ["coolwarm", "viridis", "YlOrBr"]
+
+def heatmap_countries(data_file: str, country_names: list, indicators: list, time_periods: dict):
+    """
+    Generate heatmaps of correlation between indicators for each country and time period.
+
+    Args:
+        data_file (str): The path to the CSV file containing the data.
+        country_names (list): A list of country names to include in the analysis.
+        indicators (list): A list of indicator names to include in the analysis.
+        time_periods (dict): A dictionary of time periods, where the keys are time period names
+                             and the values are tuples of start and end years.
+
+    Returns:
+        None.
+    """
 
     # Load the data from CSV file
     data = pd.read_csv(data_file, skiprows=4)
+    
+    # Define the colormap for each country
+    cmap_list = ["coolwarm", "viridis", "YlOrBr"]
 
     # Loop through each country name
     for i, country_name in enumerate(country_names):
         # Filter the data for the given country and drop unnecessary columns
-        country_data = data[data["Country Name"] == country_name].drop(["Country Name", "Country Code", "Indicator Code"], axis=1)
+        country_data = data[data["Country Name"] == country_name].drop([
+            "Country Name", "Country Code", "Indicator Code"], axis=1)
 
         # Select only the given indicators
         country_data = country_data[country_data["Indicator Name"].isin(indicators)]
@@ -201,17 +218,28 @@ def heatmap_countries(data_file, country_names, indicators, time_periods):
             # Print summary statistics
             print(f"{country_name} - {time_period_name}:")
             print(time_period_data.describe())
-
+            
             # Create a heatmap of correlation between indicators
-            fig, ax = plt.subplots(figsize=(15,12))
-            heatmap = sns.heatmap(time_period_data.corr(), center=0, cmap=cmap_list[i], annot=True, cbar_kws={'orientation': 'vertical'})
-            ax.set_title(f"{country_name} - {time_period_name}", fontweight='bold', fontsize=16)
+            fig, ax = plt.subplots(figsize=(15, 12))
+            heatmap = sns.heatmap(time_period_data.corr(), center=0, cmap=cmap_list[i],
+                                  annot=True, cbar_kws={'orientation': 'vertical'})
+            
+            # Bold the indicator names
+            for tick in ax.get_xticklabels():
+              tick.set_fontweight('bold')
+            for tick in ax.get_yticklabels():
+              tick.set_fontweight('bold')
+            ax.set_title(f"{country_name}", fontweight='bold', fontsize=17)
 
             # Add the legend
             cbar = ax.collections[0].colorbar
-            cbar.ax.tick_params(labelsize=12)
-            cbar.ax.set_ylabel('Correlation', fontsize=14, fontweight='bold', rotation=270, labelpad=20)
+            cbar.ax.tick_params(labelsize=18)
+            cbar.ax.set_ylabel('Correlation', fontsize=18, fontweight='bold', rotation=270, labelpad=18)
             cbar.ax.yaxis.set_label_position('right')
+            ax.set_xlabel('Indicator Name', fontsize=18,fontweight='bold')
+            ax.set_ylabel('Indicator Name', fontsize=18,fontweight='bold')
+            plt.xticks(fontsize=16)
+            plt.yticks(fontsize=16)
 
             plt.show()
 
@@ -226,7 +254,7 @@ def plot_gg_countries(data_file: str, countries: list, num_countries: int = 10) 
     Parameters:
     - data_file (str): the file path of the CSV data file
     - countries (list): a list of strings containing the names of the countries to filter the data for
-    - num_countries (int): the number of top emitting countries to include in the plot (default = 10)
+    - num_countries (int): the number of top emitting countries to include in the plot (default = 8)
 
     Returns:
     - None
@@ -329,7 +357,6 @@ def plot_population_data(population_file, countries, years):
     
     # move the grid to the background
     plt.gca().set_axisbelow(True)
-    
     # Display the plot
     plt.show()
 
@@ -352,14 +379,15 @@ if __name__ == '__main__':
     data_file = "D:/climate change/Climate.csv"
     country_names = ["Canada", "United Arab Emirates", "Qatar"]
     indicators = ["CO2 emissions (metric tons per capita)",
-                  "Electricity production from oil, gas and coal sources (% of total)",
-                  "Total greenhouse gas emissions (kt of CO2 equivalent)",
-                  "Population, total",
-                  "GDP per capita (constant 2010 US$)",
-                  "Forest area (% of land area)",
-                  "Agricultural land (% of land area)"]
+                      "GDP per capita (constant 2010 US$)",
+                    "Access to electricity (% of population)",
+                    "Urban population (% of total population)",
+                      "Electricity production from oil, gas and coal sources (% of total)",
+                      "Total greenhouse gas emissions (kt of CO2 equivalent)",
+                      "Forest area (sq. km)",
+                      "Agricultural land (% of land area)","Population, total",]
 
-    time_periods = {"2019": ["2015", "2019"]}
+    time_periods = {"2019": ["1960", "2015"]}
 
     heatmap_countries(data_file, country_names, indicators, time_periods)
     
