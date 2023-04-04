@@ -123,7 +123,6 @@ def plot_co2_emissions(file_path):
     plt.show()
    
 
-
 def plot_elec_production(data_path, countries):
     """
     Plots a bar chart of electricity production from oil, gas, and coal sources for the specified countries.
@@ -169,7 +168,6 @@ def plot_elec_production(data_path, countries):
     # move the grid to the background
     plt.gca().set_axisbelow(True)
     plt.show()
-
 
 
 def heatmap_countries(data_file: str, country_names: list, indicators: list, time_periods: dict):
