@@ -411,6 +411,7 @@ if __name__ == '__main__':
     indicators = ["CO2 emissions (metric tons per capita)",
                   "GDP per capita (constant 2010 US$)",
                   "Access to electricity (% of population)",
+                  "Renewable energy consumption (% of total final energy consumption)",
                   "Urban population (% of total population)",
                   "Electricity production from oil, gas and coal sources (% of total)",
                   "Total greenhouse gas emissions (kt of CO2 equivalent)",
